@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
@@ -26,6 +27,8 @@ import static junit.framework.Assert.assertNull;
 сконфигурировать контекст.*/
 @ContextConfiguration(loader= AnnotationConfigContextLoader.class,
         classes = App.class)
+@Sql("/banners-init.sql")
+
 public class BannerDaoImplIT
 {
     @Autowired
@@ -59,12 +62,13 @@ public class BannerDaoImplIT
     }
 
     @Test
-    public void testGetAllBannersIsNull()
+    public void testGetAllBanners()
     {
-        Banner expected = new Banner(1, "TEST", 0, 0,
-                "TEST", "TEST");
+        Banner expected = new Banner(1, "TEST", 2, 3,
+                "TEST2", "TEST3");
 
         List<Banner> actual = testedObject.getAllBanners();
+        System.out.println(actual.get(0));
         assertEquals(expected, actual.get(0));
     }
 }

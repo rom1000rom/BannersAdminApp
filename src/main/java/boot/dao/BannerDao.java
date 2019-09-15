@@ -1,6 +1,6 @@
 package boot.dao;
 
-import boot.entities.Banner;
+import boot.model.Banner;
 
 import java.util.List;
 
@@ -9,6 +9,12 @@ import java.util.List;
  @version 13.09.2019 */
 public interface BannerDao
 {
-    /**Получить список пользователей*/
+    /**Получить список баннеров*/
     List<Banner> getAllBanners();
+
+    /**Получить баннер по его id*/
+    Banner getBanner(Integer id);
+
+    /**Удалить баннер по его id*/
+    void deleteBanner(Integer id);
 }

@@ -12,8 +12,9 @@ CREATE TABLE banners
     CONSTRAINT "banners_pk" PRIMARY KEY ("banner_id")
 ) WITH
     (
-      OIDS=FALSE
+       OIDS=FALSE
     );
 
 INSERT INTO banners( img_src, width, height, target_url, lang_id )
-VALUES ( 'TEST', 2, 3, 'TEST2', 'TEST3');
+VALUES ( 'TEST', 0, 0, 'TEST', 'TEST'),
+       ( 'TEST', 2, 3, 'TEST2', 'TEST3');

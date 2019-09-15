@@ -1,4 +1,4 @@
-package boot.entities;
+package boot.model;
 
 import java.util.Objects;
 

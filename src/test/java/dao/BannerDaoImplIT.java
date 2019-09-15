@@ -2,16 +2,21 @@ package dao;
 
 import boot.App;
 import boot.dao.BannerDaoImpl;
-import boot.entities.Banner;
+import boot.model.Banner;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
+import org.springframework.test.jdbc.JdbcTestUtils;
 
+import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +32,8 @@ import static junit.framework.Assert.assertNull;
 сконфигурировать контекст.*/
 @ContextConfiguration(loader= AnnotationConfigContextLoader.class,
         classes = App.class)
-@Sql("/banners-init.sql")
-
+@Sql("/banners-init.sql")//Выполняем перед каждым тестом инициализирующий sql-скрипт
+@ActiveProfiles("test")//Активизируем профиль для тестирования
 public class BannerDaoImplIT
 {
     @Autowired
@@ -36,6 +41,15 @@ public class BannerDaoImplIT
 
     @Autowired
     BannerDaoImpl testedObject = new BannerDaoImpl();
+
+    @After
+    public void tearDown()
+    {
+        //Метод dropTables удаляет указанную таблицу
+        //JdbcTestUtils.deleteFromTables() очищает таблицы, не удаляя их
+        //JdbcTestUtils.countRowsInTable() подсчитывает текущее количество строк в таблице
+        JdbcTestUtils.dropTables(jdbcTemplate, "banners");
+    }
 
     @Test
     public void testFillBannerIsNull()
@@ -64,11 +78,39 @@ public class BannerDaoImplIT
     @Test
     public void testGetAllBanners()
     {
-        Banner expected = new Banner(1, "TEST", 2, 3,
+        Banner expected = new Banner(2, "TEST", 2, 3,
                 "TEST2", "TEST3");
 
-        List<Banner> actual = testedObject.getAllBanners();
-        System.out.println(actual.get(0));
-        assertEquals(expected, actual.get(0));
+            List<Banner> actual = testedObject.getAllBanners();
+        assertEquals(expected, actual.get(1));
+    }
+
+    @Test
+    public void testGetAllBannersIsNull()
+    {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "banners");
+        assertNull(testedObject.getAllBanners());
+    }
+
+    @Test
+    public void testGetBanner()
+    {
+        Banner expected = new Banner(1, "TEST", 0, 0,
+                "TEST", "TEST");
+        Banner actual = testedObject.getBanner(1);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetBannerIsNull()
+    {
+        assertNull(testedObject.getBanner(0));
+    }
+
+    @Test
+    public void testDeleteBanner()
+    {
+        testedObject.deleteBanner(1);
+        assertNull(testedObject.getBanner(1));
     }
 }

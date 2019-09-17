@@ -7,22 +7,22 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
-import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 
 /*Используя специальный runner  SpringJUnit4ClassRunner, мы
@@ -32,7 +32,9 @@ import static junit.framework.Assert.assertNull;
 сконфигурировать контекст.*/
 @ContextConfiguration(loader= AnnotationConfigContextLoader.class,
         classes = App.class)
-@Sql("/banners-init.sql")//Выполняем перед каждым тестом инициализирующий sql-скрипт
+@SqlGroup({
+        @Sql("/banners-table.sql"),
+        @Sql("/banners-data.sql")})//Выполняем перед каждым тестом инициализирующие sql-скрипты
 @ActiveProfiles("test")//Активизируем профиль для тестирования
 public class BannerDaoImplIT
 {
@@ -56,6 +58,12 @@ public class BannerDaoImplIT
     {
         Map<String, Object> source = new HashMap<String, Object>();
         assertNull(testedObject.fillBanner(source));
+    }
+
+    @Test
+    public void testGetBannersCount()
+    {
+        assertTrue(testedObject.getBannersCount().equals(2));
     }
 
     @Test
@@ -108,9 +116,62 @@ public class BannerDaoImplIT
     }
 
     @Test
+    public void testDeleteBannerIsNull()
+    {
+        assertNull(testedObject.deleteBanner(null));
+    }
+
+    @Test
+    public void testDeleteBannerNotExist()
+    {
+        assertNull(testedObject.deleteBanner(0));
+    }
+
+    @Test
     public void testDeleteBanner()
     {
         testedObject.deleteBanner(1);
         assertNull(testedObject.getBanner(1));
+    }
+
+    @Test
+    public void testAddBannerIsNull()
+    {
+        assertNull(testedObject.addBanner(null));
+    }
+
+    @Test
+    public void testAddBanner()
+    {
+        Banner expected = new Banner(4, "TEST", 3, 3,
+                "TEST2", "TEST3");
+
+        testedObject.addBanner(expected);
+        Integer id = testedObject.addBanner(expected);
+
+        assertEquals(expected, testedObject.getBanner(id));
+    }
+
+    @Test
+    public void testUpdateBannerIsNull()
+    {
+        assertNull(testedObject.updateBanner(null));
+    }
+
+    @Test
+    public void testUpdateBannerNotExist()
+    {
+        Banner banner = new Banner(0, "TEST", 3, 3,
+                "TEST2", "TEST3");
+        assertNull(testedObject.updateBanner(banner));
+    }
+
+    @Test
+    public void testUpdateBanner()
+    {
+        Banner expected = new Banner(2, "TEST", 4, 5,
+                "TEST3", "TEST4");
+        testedObject.updateBanner(expected);
+        assertEquals(expected, testedObject.getBanner(2));
     }
 }

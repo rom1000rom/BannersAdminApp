@@ -2,8 +2,12 @@ package boot;
 
 
 
+import boot.configprops.DBProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,15 +26,24 @@ public class App
         SpringApplication.run(App.class, args);
     }
 
+    @Bean("dbProperties")
+    @Profile("default")
+    @ConfigurationProperties(prefix="db")
+    public DBProperties getDBProperties()
+    {
+        return new DBProperties();
+    }
+
     /**Метод возвращает бин-источник данных для готового приложения*/
     @Bean("dataSource")
-    public DriverManagerDataSource getDriverManager()
+    @Profile("default")
+    public DriverManagerDataSource getDriverManager(DBProperties dbProperties)
     {
         DriverManagerDataSource driverManager = new DriverManagerDataSource();
-        driverManager.setDriverClassName("org.postgresql.Driver");
-        driverManager.setUrl("jdbc:postgresql://localhost:5432/banners_admin_db");
-        driverManager.setUsername("postgres");
-        driverManager.setPassword("rgb111RGB");
+        driverManager.setDriverClassName(dbProperties.getDriverClassName());
+        driverManager.setUrl(dbProperties.getUrl());
+        driverManager.setUsername(dbProperties.getUsername());
+        driverManager.setPassword(dbProperties.getPassword());
         return driverManager;
     }
 
@@ -56,5 +69,4 @@ public class App
     {
         return new JdbcTemplate(dataSource);
     }
-
 }

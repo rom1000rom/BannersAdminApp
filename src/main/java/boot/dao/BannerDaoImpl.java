@@ -3,8 +3,14 @@ package boot.dao;
 import boot.model.Banner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
 
 /**Класс-реализация интерфейса BannerDAO для работы с базой данных.
@@ -27,6 +33,21 @@ public class BannerDaoImpl implements BannerDao
     private static final String DELETE_BANNER
             = "DELETE FROM banners WHERE banner_id = ?;";
 
+    /**Запрос для добавления нового баннера в таблицу banners*/
+    private static final String ADD_BANNER
+            = "INSERT INTO banners( img_src, width, height, target_url, lang_id )\n" +
+            "VALUES ( ?, ?, ?, ?, ? );\n";
+
+    /**Запрос для добавления нового баннера в таблицу banners*/
+    private static final String UPDATE_BANNER
+            = "UPDATE banners\n" +
+            "  SET img_src = ?, width = ?, height = ?, target_url = ?, lang_id = ?\n" +
+            "  WHERE banner_id = ?;";
+
+    /**Запрос для получения количества баннеров в таблице banners*/
+    private static final String COUNT_BANNER
+            = "SELECT count( * ) FROM banners";
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -47,7 +68,7 @@ public class BannerDaoImpl implements BannerDao
         while(it.hasNext())
         {
             Map<String, Object> row = it.next();
-            listBanner.add(BannerDaoImpl.fillBanner(row));
+            listBanner.add(this.fillBanner(row));
         }
         return listBanner;
     }
@@ -63,21 +84,71 @@ public class BannerDaoImpl implements BannerDao
         {
             return null;
         }
-        return BannerDaoImpl.fillBanner(resalt.get(0));
+        return this.fillBanner(resalt.get(0));
     }
 
     /**Метод удаляет из базы данных объект класса Banner по его id.
-     @param id id баннера*/
+     @param id id баннера
+     @return id удалённого баннера или null, если в параметре null,
+     или баннер с таким id не существует*/
     @Override
-    public void deleteBanner(Integer id)
+    public Integer deleteBanner(Integer id)
     {
+        if(id == null)
+        {
+            return null;
+        }
+
+        if(this.getBanner(id) == null)
+        {
+            return null;
+        }
         jdbcTemplate.update(DELETE_BANNER, id);
+        return  id;
+    }
+
+
+
+    /**Метод добавляет в базу данных информацию о баннере.
+     * @param banner - объект баннера который нужно добавить
+     * @return id добавленного баннера или null, если в параметре null*/
+    @Override
+    public Integer addBanner(Banner banner)
+    {
+        if(banner == null)
+        {
+            return null;
+        }
+        jdbcTemplate.update(ADD_BANNER, banner.getImgSrc(), banner.getWidth(),
+                banner.getHeight(), banner.getTargetUrl(), banner.getLangId());
+        return this.getBannersCount();
+    }
+
+    /**Метод редактирует информацию о баннере в базе данных.
+     * @param banner - объект баннера который нужно редактировать
+     * @return номер отредактированного баннера или null, если в параметр null
+     * или баннера с таким id в базе не существует*/
+    @Override
+    public Integer updateBanner(Banner banner)
+    {
+        if(banner == null)
+        {
+            return null;
+        }
+
+        if(this.getBanner(banner.getBannerId()) == null)
+        {
+            return null;
+        }
+        jdbcTemplate.update(UPDATE_BANNER, banner.getImgSrc(), banner.getWidth(),
+                banner.getHeight(), banner.getTargetUrl(), banner.getLangId(), banner.getBannerId() );
+        return banner.getBannerId();
     }
 
     /**Метод создаёт, заполняет и возвращает экземпляр класса Banner.
      @param rs данные полученные из базы данных
      @return объект класса Banner */
-    public static final Banner fillBanner(Map<String, Object> rs)
+    public Banner fillBanner(Map<String, Object> rs)
     {
         if (rs.isEmpty())
         {
@@ -92,5 +163,13 @@ public class BannerDaoImpl implements BannerDao
         String langId = (String)rs.get("lang_id");
 
         return new Banner(id, imgSrc, width, height, targetUrl, langId);
+    }
+
+    /**Метод возвращает количество баннеров в базе данных
+     @return количество баннеров */
+    public Integer getBannersCount()
+    {
+        Integer count = jdbcTemplate.queryForObject(COUNT_BANNER, Integer.class);
+        return count;
     }
 }

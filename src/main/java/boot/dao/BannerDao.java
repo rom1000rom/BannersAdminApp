@@ -9,12 +9,18 @@ import java.util.List;
  @version 13.09.2019 */
 public interface BannerDao
 {
-    /**Получить список баннеров*/
+    /**Получить список всех баннеров*/
     List<Banner> getAllBanners();
 
     /**Получить баннер по его id*/
     Banner getBanner(Integer id);
 
     /**Удалить баннер по его id*/
-    void deleteBanner(Integer id);
+   Integer deleteBanner(Integer id);
+
+    /**Добавить баннер*/
+    Integer addBanner(Banner banner);
+
+    /**Редактировать баннер*/
+    Integer updateBanner(Banner banner);
 }

@@ -50,7 +50,7 @@ public class BannerDaoImplIT
         //Метод dropTables удаляет указанную таблицу
         //JdbcTestUtils.deleteFromTables() очищает таблицы, не удаляя их
         //JdbcTestUtils.countRowsInTable() подсчитывает текущее количество строк в таблице
-        JdbcTestUtils.dropTables(jdbcTemplate, "banners");
+        JdbcTestUtils.dropTables(jdbcTemplate,  "banners");
     }
 
     @Test
@@ -94,10 +94,9 @@ public class BannerDaoImplIT
     }
 
     @Test
-    public void testGetAllBannersIsNull()
+    public void testGetBannerIsNull()
     {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "banners");
-        assertNull(testedObject.getAllBanners());
+        assertNull(testedObject.getBanner(null));
     }
 
     @Test
@@ -110,7 +109,7 @@ public class BannerDaoImplIT
     }
 
     @Test
-    public void testGetBannerIsNull()
+    public void testGetBannerNotExist()
     {
         assertNull(testedObject.getBanner(0));
     }

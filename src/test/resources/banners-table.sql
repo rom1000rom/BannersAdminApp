@@ -1,5 +1,4 @@
 
-DROP TABLE  IF EXISTS banners CASCADE;
 CREATE TABLE banners
 (
         banner_id serial NOT NULL,
@@ -9,9 +8,10 @@ CREATE TABLE banners
         target_url TEXT NOT NULL,
         lang_id varchar(50) NOT NULL,
 
-    CONSTRAINT "banners_pk" PRIMARY KEY ("banner_id")
+    CONSTRAINT banners_pk PRIMARY KEY (banner_id)
 ) WITH
     (
        OIDS=FALSE
     );
+
 

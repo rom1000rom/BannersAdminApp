@@ -74,22 +74,20 @@ public class Banner
     }
 
     @Override
-    public boolean equals(Object o)
-    {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Banner banner = (Banner) o;
-        return Objects.equals(bannerId, banner.bannerId) &&
-                Objects.equals(imgSrc, banner.imgSrc) &&
-                Objects.equals(width, banner.width) &&
-                Objects.equals(height, banner.height) &&
-                Objects.equals(targetUrl, banner.targetUrl) &&
-                Objects.equals(langId, banner.langId);
+        return bannerId.equals(banner.bannerId) &&
+                imgSrc.equals(banner.imgSrc) &&
+                width.equals(banner.width) &&
+                height.equals(banner.height) &&
+                targetUrl.equals(banner.targetUrl) &&
+                langId.equals(banner.langId);
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return Objects.hash(bannerId, imgSrc, width, height, targetUrl, langId);
     }
 

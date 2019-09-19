@@ -45,7 +45,7 @@ public class BannerDaoImpl implements BannerDao
             "  WHERE banner_id = ?;";
 
     /**Запрос для получения количества баннеров в таблице banners*/
-    private static final String COUNT_BANNER
+    private static final String COUNT_BANNERS
             = "SELECT count( * ) FROM banners";
 
     @Autowired
@@ -57,14 +57,14 @@ public class BannerDaoImpl implements BannerDao
     public List<Banner> getAllBanners()
     {
         List<Map<String, Object>> listResalt = jdbcTemplate.queryForList(BANNERS_QUERY);
+        List<Banner> listBanner = new ArrayList<>();
 
         Iterator<Map<String, Object>> it = listResalt.iterator();
         if (!it.hasNext())
         {
-            return null;
+            return listBanner;
         }
 
-        List<Banner> listBanner = new ArrayList<>();
         while(it.hasNext())
         {
             Map<String, Object> row = it.next();
@@ -169,7 +169,7 @@ public class BannerDaoImpl implements BannerDao
      @return количество баннеров */
     public Integer getBannersCount()
     {
-        Integer count = jdbcTemplate.queryForObject(COUNT_BANNER, Integer.class);
+        Integer count = jdbcTemplate.queryForObject(COUNT_BANNERS, Integer.class);
         return count;
     }
 }

@@ -3,21 +3,15 @@ package boot.dao;
 import boot.model.Banner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.*;
 
 /**Класс-реализация интерфейса BannerDAO для работы с базой данных.
 @author Артемьев Р.А.
 @version 13.09.2019 */
 @Repository
-public class BannerDaoImpl implements BannerDao
+public class BannerDAOImpl implements BannerDAO
 {
     /**Запрос для получения записи из таблицы banners по его id*/
     private static final String BANNER_QUERY
@@ -52,7 +46,7 @@ public class BannerDaoImpl implements BannerDao
     private JdbcTemplate jdbcTemplate;
 
     /**Метод заполняет данными из базы данных и возвращает список экземпляров класса Banner.
-     @return список объектов класса Banner, или Null если таковых нет.*/
+     @return список объектов класса Banner*/
     @Override
     public List<Banner> getAllBanners()
     {
@@ -125,7 +119,7 @@ public class BannerDaoImpl implements BannerDao
     }
 
     /**Метод редактирует информацию о баннере в базе данных.
-     * @param banner - объект баннера который нужно редактировать
+     * @param banner - объект баннера которым нужно обновить существующий
      * @return номер отредактированного баннера или null, если в параметр null
      * или баннера с таким id в базе не существует*/
     @Override

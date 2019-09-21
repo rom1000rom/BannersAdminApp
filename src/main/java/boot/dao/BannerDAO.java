@@ -7,7 +7,7 @@ import java.util.List;
 /**Интерфейс служит для определения функций хранилища данных об интернет-баннерах
  @author Артемьев Р.А.
  @version 13.09.2019 */
-public interface BannerDao
+public interface BannerDAO
 {
     /**Получить список всех баннеров*/
     List<Banner> getAllBanners();

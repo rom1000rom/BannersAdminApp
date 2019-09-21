@@ -2,13 +2,10 @@ package dao;
 
 import boot.App;
 import boot.dao.BannerChangeDAOImpl;
-import boot.dao.BannerDaoImpl;
-import boot.model.Banner;
 import boot.model.BannerChange;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
@@ -21,12 +18,10 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static ch.qos.logback.core.joran.action.ActionConst.NULL;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -42,7 +37,7 @@ import static org.junit.Assert.assertTrue;
         @Sql("/banners-change-table.sql"),
         @Sql("/banners-change-data.sql")})//Выполняем перед каждым тестом инициализирующие sql-скрипты
 @ActiveProfiles("test")//Активизируем профиль для тестирования
-public class BannerChangeDaoImplIT
+public class BannerChangeDAOImplIT
 {
     @Autowired
     private JdbcTemplate jdbcTemplate;

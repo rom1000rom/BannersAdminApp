@@ -10,11 +10,6 @@ import java.util.List;
  @version 17.09.2019 */
 public interface BannerChangeDAO
 {
-    /*Типы действий над баннерами*/
-    String CREATE = "CREATE";
-    String UPDATE = "UPDATE";
-    String DELETE = "DELETE";
-
 
     /**Получить список всех действий над баннерами*/
     List<BannerChange> getAllBannersChanges();
@@ -25,6 +20,6 @@ public interface BannerChangeDAO
      * 3 - по id администратора*/
     List<BannerChange> getBannersChanges(Integer id, Integer type);
 
-    /**Добавить баннер действие над баннером*/
+    /**Добавить действие над баннером*/
     Integer addBannerChange(BannerChange bannerChange);
 }

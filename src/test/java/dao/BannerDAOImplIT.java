@@ -1,7 +1,7 @@
 package dao;
 
 import boot.App;
-import boot.dao.BannerDaoImpl;
+import boot.dao.BannerDAOImpl;
 import boot.model.Banner;
 import org.junit.After;
 import org.junit.Test;
@@ -36,13 +36,13 @@ import static org.junit.Assert.assertTrue;
         @Sql("/banners-table.sql"),
         @Sql("/banners-data.sql")})//Выполняем перед каждым тестом инициализирующие sql-скрипты
 @ActiveProfiles("test")//Активизируем профиль для тестирования
-public class BannerDaoImplIT
+public class BannerDAOImplIT
 {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    BannerDaoImpl testedObject = new BannerDaoImpl();
+    BannerDAOImpl testedObject = new BannerDAOImpl();
 
     @After
     public void tearDown()

@@ -11,7 +11,12 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
 import javax.sql.DataSource;
 
 /**Класс представляет собой java-конфигурацию Spring Context а также точку входа
@@ -19,6 +24,7 @@ import javax.sql.DataSource;
  @author Артемьев Р.А.
  @version 15.09.2019 */
 @SpringBootApplication
+@EnableTransactionManagement//Включаем поддержку транзакций
 public class App
 {
     public static void main(String[] args)
@@ -69,4 +75,5 @@ public class App
     {
         return new JdbcTemplate(dataSource);
     }
+
 }

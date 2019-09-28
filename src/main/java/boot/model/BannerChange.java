@@ -1,7 +1,9 @@
 package boot.model;
 
 
-import java.time.LocalDateTime;
+
+
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**Класс для хранения данных о действии над интернет-баннером.
@@ -14,10 +16,10 @@ public class BannerChange
     private Integer adminId;
     private String  typeChange;
     private String   descriptionChange;
-    private LocalDateTime dateChange;
+    private LocalDate dateChange;
 
     public BannerChange(Integer bannerChangeId, Integer bannerId, Integer adminId,
-                        String typeChange, String descriptionChange, LocalDateTime dateChange)
+                        String typeChange, String descriptionChange, LocalDate dateChange)
     {
         this.bannerChangeId = bannerChangeId;
         this.bannerId = bannerId;
@@ -67,11 +69,11 @@ public class BannerChange
         this.descriptionChange = descriptionChange;
     }
 
-    public LocalDateTime getDateChange() {
+    public LocalDate getDateChange() {
         return dateChange;
     }
 
-    public void setDateChange(LocalDateTime dateChange) {
+    public void setDateChange(LocalDate dateChange) {
         this.dateChange = dateChange;
     }
 
@@ -80,12 +82,12 @@ public class BannerChange
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BannerChange that = (BannerChange) o;
-        return bannerChangeId.equals(that.bannerChangeId) &&
-                bannerId.equals(that.bannerId) &&
-                adminId.equals(that.adminId) &&
-                typeChange.equals(that.typeChange) &&
+        return Objects.equals(bannerChangeId, that.bannerChangeId) &&
+                Objects.equals(bannerId, that.bannerId) &&
+                Objects.equals(adminId, that.adminId) &&
+                Objects.equals(typeChange, that.typeChange) &&
                 Objects.equals(descriptionChange, that.descriptionChange) &&
-                dateChange.equals(that.dateChange);
+                Objects.equals(dateChange, that.dateChange);
     }
 
     @Override
@@ -105,3 +107,4 @@ public class BannerChange
                 '}';
     }
 }
+

@@ -4,6 +4,7 @@ import boot.dao.BannerChangeDAO;
 import boot.dao.BannerDAO;
 import boot.model.Banner;
 import boot.model.BannerChange;
+import boot.services.BannersAdminService;
 import boot.services.BannersAdminServiceImpl;
 import org.easymock.EasyMockRule;
 import org.easymock.EasyMockSupport;
@@ -19,6 +20,8 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,7 +84,7 @@ public class BannersAdminServiceImplTest extends EasyMockSupport
     public void testGetAllBannersChanges()
     {
         BannerChange expected = new BannerChange(1, 1, 1,
-                "CREATE", null, Timestamp.valueOf("2016-09-21 22:25:35").toLocalDateTime());
+                "CREATE", null, LocalDate.parse("2016-09-21"));
 
         List<BannerChange> actualList = new ArrayList<>();
         actualList.add(expected);
@@ -95,7 +98,7 @@ public class BannersAdminServiceImplTest extends EasyMockSupport
     public void testGetBannersChanges()
     {
         BannerChange expected = new BannerChange(3, 1, 2,
-                "DELETE", null, Timestamp.valueOf("2016-09-21 22:25:35").toLocalDateTime());
+                "DELETE", null, LocalDate.parse("2016-09-21"));
 
         List<BannerChange> actualList = new ArrayList<>();
         actualList.add(expected);
@@ -109,7 +112,7 @@ public class BannersAdminServiceImplTest extends EasyMockSupport
     public void testGetBannersChangesByBannerId()
     {
         BannerChange expected = new BannerChange(4, 5, 1,
-                "CREATE", null, Timestamp.valueOf("2016-09-21 22:25:35").toLocalDateTime());
+                "CREATE", null, LocalDate.parse("2016-09-21"));
 
         List<BannerChange> actualList = new ArrayList<>();
         actualList.add(expected);
@@ -123,7 +126,7 @@ public class BannersAdminServiceImplTest extends EasyMockSupport
     public void testGetBannersChangesByAdminId()
     {
         BannerChange expected = new BannerChange(3, 1, 2,
-                "DELETE", null, Timestamp.valueOf("2016-09-21 22:25:35").toLocalDateTime());
+                "DELETE", null, LocalDate.parse("2016-09-21"));
 
         List<BannerChange> actualList = new ArrayList<>();
         actualList.add(expected);
@@ -149,4 +152,81 @@ public class BannersAdminServiceImplTest extends EasyMockSupport
         assertNull(testedObject.getBannersChanges(1, 4));
     }
 
+    @Test
+    public void testAddBannerIsNull()
+    {
+        expect(bannerDAO.addBanner(null)).andReturn(null);
+        replayAll();
+        assertNull(testedObject.addBanner(null));
+    }
+
+    @Test
+    public void testAddBanner()
+    {
+        Integer id = 1;
+        Banner expected = new Banner(0, "TEST", 0, 0,
+                "TEST", "TEST");
+        expect(bannerDAO.addBanner(expected)).andReturn(id);
+        expect(bannerChangeDAO.addBannerChange(new BannerChange(0, id, 1,
+                BannersAdminService.CREATE, expected.toString(), LocalDate.now()))).andReturn(1);
+        replayAll();
+        assertThat(testedObject.addBanner(expected), is(id));
+    }
+
+    @Test
+    public void testDeleteBannerIsNull()
+    {
+        expect(bannerDAO.deleteBanner(null)).andReturn(null);
+        replayAll();
+        assertNull(testedObject.deleteBanner(null));
+    }
+
+    @Test
+    public void testDeleteBanner()
+    {
+        Integer id = 1;
+
+        expect(bannerDAO.deleteBanner(id)).andReturn(id);
+        expect(bannerChangeDAO.addBannerChange(new BannerChange(0, id, 1,
+                BannersAdminService.DELETE, "", LocalDate.now()))).andReturn(1);
+        replayAll();
+        assertThat(testedObject.deleteBanner(id), is(id));
+    }
+
+    @Test
+    public void testUpdateBannerIsNull()
+    {
+        expect(bannerDAO.updateBanner(null)).andReturn(null);
+        replayAll();
+
+        assertNull(testedObject.updateBanner(null));
+    }
+
+    @Test
+    public void testUpdateBannerNotExist()
+    {
+        Banner expected = new Banner(0, "TEST", 3, 3,
+                "TEST2", "TEST3");
+        expect(bannerDAO.updateBanner(expected)).andReturn(null);
+        replayAll();
+
+        assertNull(testedObject.updateBanner(expected));
+    }
+
+
+    @Test
+    public void testUpdateBanner()
+    {
+        Integer id = 2;
+        Banner expectedBanner = new Banner(id, "TEST", 3, 3,
+                "TEST", "TEST");
+        BannerChange expectedBannerChange = new BannerChange(0, id,
+                1, BannersAdminService.UPDATE,
+                "New value: " + expectedBanner.toString(), LocalDate.now());
+        expect(bannerDAO.updateBanner(expectedBanner)).andReturn(id);
+        expect(bannerChangeDAO.addBannerChange(expectedBannerChange)).andReturn(1);
+        replayAll();
+
+        assertThat(testedObject.updateBanner(expectedBanner), is(id));
+    }
 }

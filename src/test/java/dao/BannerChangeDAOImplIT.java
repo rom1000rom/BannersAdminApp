@@ -17,6 +17,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -58,7 +59,7 @@ public class BannerChangeDAOImplIT
     public void testGetAllBannersChanges()
     {
         BannerChange expected = new BannerChange(1, 1, 1,
-                "CREATE", null, Timestamp.valueOf("2016-09-21 22:25:35").toLocalDateTime());
+                "CREATE", null, LocalDate.parse("2016-09-21"));
 
         List<BannerChange> actual = testedObject.getAllBannersChanges();
 
@@ -69,7 +70,7 @@ public class BannerChangeDAOImplIT
     public void testGetBannersChanges()
     {
         BannerChange expected = new BannerChange(3, 1, 2,
-                "DELETE", null, Timestamp.valueOf("2016-09-21 22:25:35").toLocalDateTime());
+                "DELETE", null, LocalDate.parse("2016-09-21"));
 
         BannerChange actual = testedObject.getBannersChanges(3, 1).get(0);
         assertEquals(expected, actual);
@@ -79,7 +80,7 @@ public class BannerChangeDAOImplIT
     public void testGetBannersChangesByBannerId()
     {
         BannerChange expected = new BannerChange(4, 5, 1,
-                "CREATE", null, Timestamp.valueOf("2016-09-21 22:25:35").toLocalDateTime());
+                "CREATE", null, LocalDate.parse("2016-09-21"));
 
         BannerChange actual = testedObject.getBannersChanges(5, 2).get(0);
         assertEquals(expected, actual);
@@ -89,7 +90,7 @@ public class BannerChangeDAOImplIT
     public void testGetBannersChangesByAdminId()
     {
         BannerChange expected = new BannerChange(3, 1, 2,
-                "DELETE", null, Timestamp.valueOf("2016-09-21 22:25:35").toLocalDateTime());
+                "DELETE", null, LocalDate.parse("2016-09-21"));
 
         BannerChange actual = testedObject.getBannersChanges(2, 3).get(0);
         assertEquals(expected, actual);
@@ -109,7 +110,7 @@ public class BannerChangeDAOImplIT
     public void testAddBannerChange()
     {
         BannerChange expected = new BannerChange(5, 2, 3,
-                "CREATE", null, Timestamp.valueOf("2016-09-21 22:25:35").toLocalDateTime());
+                "CREATE", null, LocalDate.parse("2016-09-21"));
 
         Integer id = testedObject.addBannerChange(expected);
         BannerChange actual = testedObject.getBannersChanges(id, 1).get(0);
@@ -126,10 +127,10 @@ public class BannerChangeDAOImplIT
     @Test
     public void testFillBannerChange()
     {
-        LocalDateTime localDateTime = LocalDateTime.now();
-        Timestamp localTimestamp = Timestamp.valueOf(localDateTime);
+        String date = "2016-09-21";
+        String dateTime = "2016-09-21 00:00:00";
         BannerChange expected = new BannerChange(1, 2, 1,
-                "CREATE", "", localDateTime);
+                "CREATE", "", LocalDate.parse(date));
 
         Map<String, Object> source = new HashMap<String, Object>();
         source.put("banner_change_id", 1);
@@ -137,7 +138,7 @@ public class BannerChangeDAOImplIT
         source.put("admin_id", 1);
         source.put("type_change", "CREATE");
         source.put("description_change", "");
-        source.put("date_change", localTimestamp);
+        source.put("date_change", Timestamp.valueOf(dateTime));
 
         assertEquals(expected, testedObject.fillBannerChange(source));
     }

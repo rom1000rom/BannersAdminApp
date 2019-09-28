@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -82,7 +83,7 @@ public class BannersAdminServiceImpl implements BannersAdminService
             //Добавляем информацию об операции в базу, для целей аудита
             bannerChangeDAO.addBannerChange(new BannerChange(0, bannerId,
                     1, BannersAdminService.CREATE, banner.toString(),
-                    LocalDateTime.now()));
+                    LocalDate.now()));
         }
         return bannerId;
     }
@@ -103,14 +104,14 @@ public class BannersAdminServiceImpl implements BannersAdminService
             //Добавляем информацию об операции в базу, для целей аудита
             bannerChangeDAO.addBannerChange(new BannerChange(0, bannerId,
                     1, BannersAdminService.DELETE, "",
-                    LocalDateTime.now()));
+                    LocalDate.now()));
         }
         return bannerId;
     }
 
     /**Метод редактирует информацию о баннере в базе данных и добавляет в неё
      * информацию об этом действии в целях аудита в рамках одной транзакции.
-     * @param banner - объект баннера которым нужно обновить существующий
+     * @param banner  объект баннера которым нужно обновить существующий
      * @return номер отредактированного баннера или null, если в параметр null
      * или баннера с таким id в базе не существует*/
     @Override
@@ -124,7 +125,7 @@ public class BannersAdminServiceImpl implements BannersAdminService
             //Добавляем информацию об операции в базу, для целей аудита
             bannerChangeDAO.addBannerChange(new BannerChange(0,
                     bannerId, 1, BannersAdminService.UPDATE,
-                    "New value: " + banner.toString(), LocalDateTime.now()));
+                    "New value: " + banner.toString(), LocalDate.now()));
         }
         return bannerId;
     }

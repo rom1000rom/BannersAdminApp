@@ -153,7 +153,7 @@ public class BannerChangeDAOImpl implements BannerChangeDAO
         Timestamp dateChange = (Timestamp)rs.get("date_change");
 
         return new BannerChange(bannerChangeId, bannerId, adminId, typeChange,
-                descriptionChange, dateChange.toLocalDateTime());
+                descriptionChange, dateChange.toLocalDateTime().toLocalDate());
     }
 
     /**Метод возвращает количество изменений баннеров в базе данных

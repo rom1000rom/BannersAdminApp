@@ -1,5 +1,7 @@
 package boot.model;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.Objects;
 
 /**Класс для хранения данных об интернет-баннере.
@@ -7,11 +9,29 @@ import java.util.Objects;
  @version 13.09.2019 */
 public class Banner
 {
+    /*Аннотация @NotNull указывает на обязательность параметра.
+    Следует использовать с ссылочными типами.
+    Если же мы нарушим хотя бы одно условие, то в ответ получим json
+    с детальным описанием ошибки. Статус ответа будет не 200, а 400 (Bad Request).*/
+    @NotNull
     private Integer bannerId;
+
+    @NotNull
     private String imgSrc;
+
+    @NotNull
+    @Positive
     private Integer width;
+
+    /*Аннотация @Positive указывает, что число должно быть положительным*/
+    @NotNull
+    @Positive
     private Integer height;
+
+    @NotNull
     private String targetUrl;
+
+    @NotNull
     private String langId;
 
     public Banner(Integer bannerId, String imgSrc, Integer width,

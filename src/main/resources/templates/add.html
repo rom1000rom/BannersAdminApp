@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Add banner</title>
+    <script type="text/javascript" src="jquery.json-2.4.min.js"></script>
+    <script type="text/javascript"
+            src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js">
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function()
+        {
+            $("#addBut").click(function(){
+                //сформируем JSON
+                var JsonData = {
+                    "bannerId":0,
+                    "imgSrc":document.getElementById("imgSrc").value,
+                    "width":document.getElementById("width").value,
+                    "height":document.getElementById("height").value,
+                    "targetUrl":document.getElementById("targetUrl").value,
+                    "langId":document.getElementById("langId").value
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "http://localhost:8080/banners",
+                    dataType: "json",
+                    contentType : "application/json",
+                    data: JSON.stringify(JsonData),//можно передать переменную с json в одном из параметре запроса
+                    success: function(res) {//функция выполняется при удачном заверщение
+                        alert("Баннер успешно добавлен");
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+
+<form>
+    <fieldset>
+        <legend>Характеристики нового баннера</legend>
+        ImgSrc:    <br /><input type='text' id='imgSrc' /><br />
+        Width:     <br /><input type='number' id='width' /><br />
+        Height:    <br /><input type='number' id='height' /><br />
+        TargetUrl: <br /><input type='text' id='targetUrl' /><br />
+        LangId:    <br /><input type='text' id='langId' />
+    </fieldset>
+</form> <br/>
+    <input id="addBut" type="submit" value="Добавить баннер" /><br/><br/>
+
+    <a href="/">Главная</a>
+
+</body>
+</html>

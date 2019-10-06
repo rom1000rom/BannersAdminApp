@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>BannersAdminApp</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+    <script
+            type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js">
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function()//Код который будет выполнен после полной загрузки документа
+        {
+            $.getJSON(//Загружаем JSON - данные с сервера используя AJAX запрос(GET).
+                "http://localhost:8080/banners",
+                function(data)
+                {
+                    for (var i in data) //Проходим по массиву JSON-объектов
+                    {
+                        var row = data[i];
+                        var y = i;
+                        ++y;
+                        var x = document.getElementById("tab").insertRow(y);//Добавляем строку в таблицу
+
+                        x.insertCell(0);//Добавляем ячейки
+                        x.insertCell(1);
+                        x.insertCell(2);
+                        x.insertCell(3);
+                        x.insertCell(4);
+                        x.insertCell(5);
+                        x.insertCell(6);
+                        //Помещаем в ячейки значения, полученные от сервера
+                        document.getElementById("tab").rows[y].cells[0].innerHTML = row.bannerId;
+                        document.getElementById("tab").rows[y].cells[1].innerHTML = row.imgSrc;
+                        document.getElementById("tab").rows[y].cells[2].innerHTML = row.width;
+                        document.getElementById("tab").rows[y].cells[3].innerHTML = row.height;
+                        document.getElementById("tab").rows[y].cells[4].innerHTML = row.targetUrl;
+                        document.getElementById("tab").rows[y].cells[5].innerHTML = row.langId;
+                        document.getElementById("tab").rows[y].cells[6].innerHTML =
+                            "<input type=\"radio\" name=\"radio\" id=" + row.bannerId + ">";
+                    }
+                })
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function()
+        {
+            $("#deleteBut").click(function()
+            {
+                if (confirm("Удалить баннер?")) //Если удаление подтверждено
+                {
+                    var gr = document.getElementsByName('radio');
+                    var count = gr.length;
+                    for(var i=0; count; i++)
+                        if (gr[i].checked)
+                        {
+
+                            $.ajax({
+                                type: "DELETE",
+                                url: "http://localhost:8080/banners/" + gr[i].getAttribute("id"),
+                                dataType: "json",
+                                success: function(res) {//функция выполняется при удачном заверщение
+                                    location.reload();
+                                }
+                            });
+                        }
+                }
+            });
+        });
+    </script>
+
+</head>
+<body>
+    <h2>Список баннеров</h2>
+
+    <table border='1' id="tab" >
+        <tr>
+            <th><div style="width: 40px;">Id</div></th>
+            <th><div style="width: 250px;">ImgSrc</div></th>
+            <th>Width</th>
+            <th>Height</th>
+            <th><div style="width: 250px;">TargetUrl</div></th>
+            <th>LangId</th>
+            <td>&nbsp</td>
+        </tr>
+    </table> <br/>
+
+    <input type="button" value="Добавить" onclick="parent.location='/add'"/> &nbsp &nbsp
+
+    <input id="deleteBut" type="submit" value="Удалить" /> &nbsp &nbsp
+
+    <input id="editBut" type="submit" value="Редактировать" onclick="parent.location='/edit'"/> <br/>
+
+    <br/><p>Принятые с сервера данные: <b><span id="res"></span></b></p>
+
+</body>
+</html>

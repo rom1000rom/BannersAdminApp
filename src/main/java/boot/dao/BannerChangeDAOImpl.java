@@ -20,33 +20,32 @@ public class BannerChangeDAOImpl implements BannerChangeDAO
 {
     /**Запрос для получения записи из таблицы banners_changes по id действия над баннером*/
     private static final String BANNER_CHANGE_QUERY
-            = "Select banner_change_id, banner_id, admin_id, type_change, description_change,  date_change" +
+            = "Select banner_change_id, banner_id, admin_name, type_change, description_change,  date_change" +
             " From banners_changes WHERE banner_change_id = ?;";
 
     /**Запрос для получения списка записей из таблицы banners_changes по id баннера*/
     private static final String BANNER_CHANGES_QUERY_BY_BANNER_ID
-            = "Select banner_change_id, banner_id, admin_id, type_change, description_change,  date_change" +
+            = "Select banner_change_id, banner_id, admin_name, type_change, description_change,  date_change" +
             " From banners_changes WHERE banner_id = ?;";
-
-    /**Запрос для получения списка записей из таблицы banners_changes по id администратора*/
-    private static final String BANNERS_CHANGES_QUERY_BY_ADMIN_ID
-            = "Select banner_change_id, banner_id, admin_id, type_change, description_change,  date_change" +
-            " From banners_changes WHERE admin_id = ?;";
 
     /**Запрос для добавления новой записи в таблицу banners_changes*/
     private static final String ADD_BANNER_CHANGE
             = "INSERT INTO banners_changes" +
-            "( banner_id, admin_id, type_change, description_change,  date_change)\n" +
+            "( banner_id, admin_name, type_change, description_change,  date_change)\n" +
             "VALUES ( ?, ?, ?, ?, ? );\n";
 
     /**Запрос для получения всех записей из таблицы banners_changes*/
     private static final String BANNERS_CHANGES_QUERY
-            = "Select banner_change_id, banner_id, admin_id, type_change, description_change,  date_change" +
-            " From banners_changes ORDER BY banner_change_id;";
+            = "Select banner_change_id, banner_id, admin_name, type_change, description_change,  date_change" +
+            " From banners_changes ORDER BY banner_change_id DESC;";
 
     /**Запрос для получения количества баннеров в таблице banners*/
     private static final String COUNT_BANNERS_CHANGES
             = "SELECT count( * ) FROM banners_changes";
+
+    /**Запрос для получения максимального значения Id в таблице banners*/
+    private static final String MAX_ID
+            = "SELECT max(banner_change_id) FROM banners_changes;";
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -77,8 +76,7 @@ public class BannerChangeDAOImpl implements BannerChangeDAO
      /**Метод позволяет получить список действий над баннерами в зависимости от типа отбора:
       * 1 - по id действия над баннером
       * 2 - по id баннера
-      * 3 - по id администратора
-      *@param id - id номер действия над баннером, баннера или администратора в зависимости
+      *@param id - id номер действия над баннером, баннера  в зависимости
       *          от выбранного типа отбора
       *@param type - тип отбора
       *@return список действий над баннерами или null, если введены неккоректные параметры*/
@@ -97,9 +95,6 @@ public class BannerChangeDAOImpl implements BannerChangeDAO
                 break;
             case 2: //по id баннера
                 listResalt = jdbcTemplate.queryForList(BANNER_CHANGES_QUERY_BY_BANNER_ID, id);
-                break;
-            case 3: //по id администратора
-                listResalt = jdbcTemplate.queryForList(BANNERS_CHANGES_QUERY_BY_ADMIN_ID, id);
                 break;
             default:
                 return null;
@@ -129,10 +124,10 @@ public class BannerChangeDAOImpl implements BannerChangeDAO
         {
             return null;
         }
-        jdbcTemplate.update(ADD_BANNER_CHANGE, bannerChange.getBannerId(), bannerChange.getAdminId(),
+        jdbcTemplate.update(ADD_BANNER_CHANGE, bannerChange.getBannerId(), bannerChange.getAdminName(),
                 bannerChange.getTypeChange(), bannerChange.getDescriptionChange(),
                 bannerChange.getDateChange());
-        return this.getBannersChangesCount();
+        return jdbcTemplate.queryForObject(MAX_ID, Integer.class);
     }
 
     /**Метод создаёт, заполняет и возвращает экземпляр класса BannerChange.
@@ -147,12 +142,12 @@ public class BannerChangeDAOImpl implements BannerChangeDAO
 
         Integer bannerChangeId = (Integer)rs.get("banner_change_id");
         Integer bannerId = (Integer)rs.get("banner_id");
-        Integer adminId = (Integer)rs.get("admin_id");
+        String adminName = (String) rs.get("admin_name");
         String typeChange = (String)rs.get("type_change");
         String descriptionChange = (String)rs.get("description_change");
         Timestamp dateChange = (Timestamp)rs.get("date_change");
 
-        return new BannerChange(bannerChangeId, bannerId, adminId, typeChange,
+        return new BannerChange(bannerChangeId, bannerId, adminName, typeChange,
                 descriptionChange, dateChange.toLocalDateTime().toLocalDate());
     }
 

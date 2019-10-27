@@ -1,17 +1,28 @@
 package services;
 
+import boot.App;
+import boot.dao.AppUserDAO;
 import boot.dao.BannerChangeDAO;
 import boot.dao.BannerDAO;
+import boot.model.AppUser;
 import boot.model.Banner;
 import boot.model.BannerChange;
 import boot.services.BannersAdminService;
 import boot.services.BannersAdminServiceImpl;
+import boot.services.CurrentPrincipalService;
 import org.easymock.EasyMockRule;
 import org.easymock.EasyMockSupport;
 import org.easymock.TestSubject;
 import org.junit.Rule;
 import org.junit.Test;
 import org.easymock.Mock;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
@@ -24,7 +35,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 
 
 public class BannersAdminServiceImplTest extends EasyMockSupport
@@ -40,6 +50,12 @@ public class BannersAdminServiceImplTest extends EasyMockSupport
 
     @Mock
     private BannerChangeDAO bannerChangeDAO;
+
+    @Mock
+    private AppUserDAO appUserDAO;
+
+    @Mock
+    private CurrentPrincipalService currentPrincipalService;
 
     @Test
     public void testGetAllBanners()
@@ -83,7 +99,7 @@ public class BannersAdminServiceImplTest extends EasyMockSupport
     @Test
     public void testGetAllBannersChanges()
     {
-        BannerChange expected = new BannerChange(1, 1, 1,
+        BannerChange expected = new BannerChange(1, 1, "1",
                 "CREATE", null, LocalDate.parse("2016-09-21"));
 
         List<BannerChange> actualList = new ArrayList<>();
@@ -97,7 +113,7 @@ public class BannersAdminServiceImplTest extends EasyMockSupport
     @Test
     public void testGetBannersChanges()
     {
-        BannerChange expected = new BannerChange(3, 1, 2,
+        BannerChange expected = new BannerChange(3, 1, "2",
                 "DELETE", null, LocalDate.parse("2016-09-21"));
 
         List<BannerChange> actualList = new ArrayList<>();
@@ -111,7 +127,7 @@ public class BannersAdminServiceImplTest extends EasyMockSupport
     @Test
     public void testGetBannersChangesByBannerId()
     {
-        BannerChange expected = new BannerChange(4, 5, 1,
+        BannerChange expected = new BannerChange(4, 5, "1",
                 "CREATE", null, LocalDate.parse("2016-09-21"));
 
         List<BannerChange> actualList = new ArrayList<>();
@@ -120,20 +136,6 @@ public class BannersAdminServiceImplTest extends EasyMockSupport
         replayAll();
 
         assertThat(testedObject.getBannersChanges(5, 2), is(actualList));
-    }
-
-    @Test
-    public void testGetBannersChangesByAdminId()
-    {
-        BannerChange expected = new BannerChange(3, 1, 2,
-                "DELETE", null, LocalDate.parse("2016-09-21"));
-
-        List<BannerChange> actualList = new ArrayList<>();
-        actualList.add(expected);
-        expect(bannerChangeDAO.getBannersChanges(2, 3)).andReturn(actualList);
-        replayAll();
-
-        assertThat(testedObject.getBannersChanges(2, 3), is(actualList));
     }
 
     @Test
@@ -164,11 +166,14 @@ public class BannersAdminServiceImplTest extends EasyMockSupport
     public void testAddBanner()
     {
         Integer id = 1;
-        Banner expected = new Banner(0, "TEST", 0, 0,
+        Banner expected = new Banner(id, "TEST", 0, 0,
                 "TEST", "TEST");
         expect(bannerDAO.addBanner(expected)).andReturn(id);
-        expect(bannerChangeDAO.addBannerChange(new BannerChange(0, id, 1,
-                BannersAdminService.CREATE, expected.toString(), LocalDate.now()))).andReturn(1);
+        expect(currentPrincipalService.getCurrentPrincipalName()).andReturn("TEST");
+        expect(bannerChangeDAO.addBannerChange(new BannerChange(0, id,
+                "TEST",
+                BannersAdminService.CREATE, expected.toString(),
+                LocalDate.now()))).andReturn(id);
         replayAll();
         assertThat(testedObject.addBanner(expected), is(id));
     }
@@ -187,8 +192,10 @@ public class BannersAdminServiceImplTest extends EasyMockSupport
         Integer id = 1;
 
         expect(bannerDAO.deleteBanner(id)).andReturn(id);
-        expect(bannerChangeDAO.addBannerChange(new BannerChange(0, id, 1,
-                BannersAdminService.DELETE, "", LocalDate.now()))).andReturn(1);
+        expect(currentPrincipalService.getCurrentPrincipalName()).andReturn("TEST");
+        expect(bannerChangeDAO.addBannerChange(new BannerChange(0, id,
+                "TEST", BannersAdminService.DELETE, "",
+                LocalDate.now()))).andReturn(1);
         replayAll();
         assertThat(testedObject.deleteBanner(id), is(id));
     }
@@ -221,12 +228,33 @@ public class BannersAdminServiceImplTest extends EasyMockSupport
         Banner expectedBanner = new Banner(id, "TEST", 3, 3,
                 "TEST", "TEST");
         BannerChange expectedBannerChange = new BannerChange(0, id,
-                1, BannersAdminService.UPDATE,
+                "TEST", BannersAdminService.UPDATE,
                 "New value: " + expectedBanner.toString(), LocalDate.now());
         expect(bannerDAO.updateBanner(expectedBanner)).andReturn(id);
+        expect(currentPrincipalService.getCurrentPrincipalName()).andReturn("TEST");
         expect(bannerChangeDAO.addBannerChange(expectedBannerChange)).andReturn(1);
         replayAll();
 
         assertThat(testedObject.updateBanner(expectedBanner), is(id));
+    }
+
+    @Test
+    public void testAddUserIsNull()
+    {
+        expect(appUserDAO.addAppUser(null)).andReturn(null);
+        replayAll();
+        assertNull(testedObject.addUser(null));
+    }
+
+    @Test
+    public void testAddUser()
+    {
+        Integer id = 1;
+        AppUser expected = new AppUser(id, "TEST_NAME",
+                "TEST_PASSWORD");
+        expect(appUserDAO.addAppUser(expected)).andReturn(id);
+
+        replayAll();
+        assertThat(testedObject.addUser(expected), is(id));
     }
 }

@@ -1,11 +1,14 @@
 package boot.services;
 
 
+import boot.dao.AppUserDAO;
 import boot.dao.BannerChangeDAO;
 import boot.dao.BannerDAO;
+import boot.model.AppUser;
 import boot.model.Banner;
 import boot.model.BannerChange;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -25,6 +28,12 @@ public class BannersAdminServiceImpl implements BannersAdminService
 
     @Autowired
     BannerChangeDAO bannerChangeDAO;
+
+    @Autowired
+    AppUserDAO appUserDAO;
+
+    @Autowired
+    CurrentPrincipalService currentPrincipalService;
 
     /**Метод возвращает список всех баннеров, экземпляров класса Banner.
      @return список объектов класса Banner*/
@@ -55,8 +64,7 @@ public class BannersAdminServiceImpl implements BannersAdminService
     /**Метод позволяет получить список действий над баннерами в зависимости от типа отбора:
      * 1 - по id действия над баннером
      * 2 - по id баннера
-     * 3 - по id администратора
-     *@param id - id номер действия над баннером, баннера или администратора в зависимости
+     *@param id - id номер действия над баннером, баннера в зависимости
      *          от выбранного типа отбора
      *@param type - тип отбора
      *@return список действий над баннерами или null, если введены неккоректные параметры*/
@@ -77,13 +85,13 @@ public class BannersAdminServiceImpl implements BannersAdminService
     public Integer addBanner(Banner banner)
     {
         Integer bannerId = bannerDAO.addBanner(banner);//Добавляем информацию о баннере в базу
-
         if(bannerId != null)
         {
+            banner.setBannerId(bannerId);
             //Добавляем информацию об операции в базу, для целей аудита
             bannerChangeDAO.addBannerChange(new BannerChange(0, bannerId,
-                    1, BannersAdminService.CREATE, banner.toString(),
-                    LocalDate.now()));
+                    currentPrincipalService.getCurrentPrincipalName(),
+                    BannersAdminService.CREATE, banner.toString(), LocalDate.now()));
         }
         return bannerId;
     }
@@ -98,13 +106,12 @@ public class BannersAdminServiceImpl implements BannersAdminService
     public Integer deleteBanner(Integer id)
     {
         Integer bannerId = bannerDAO.deleteBanner(id);
-
         if(bannerId != null)
         {
             //Добавляем информацию об операции в базу, для целей аудита
             bannerChangeDAO.addBannerChange(new BannerChange(0, bannerId,
-                    1, BannersAdminService.DELETE, "",
-                    LocalDate.now()));
+                    currentPrincipalService.getCurrentPrincipalName(),
+                    BannersAdminService.DELETE, "", LocalDate.now()));
         }
         return bannerId;
     }
@@ -119,15 +126,25 @@ public class BannersAdminServiceImpl implements BannersAdminService
     public Integer updateBanner(Banner banner)
     {
         Integer bannerId = bannerDAO.updateBanner(banner);
-
         if(bannerId != null)
         {
             //Добавляем информацию об операции в базу, для целей аудита
-            bannerChangeDAO.addBannerChange(new BannerChange(0,
-                    bannerId, 1, BannersAdminService.UPDATE,
-                    "New value: " + banner.toString(), LocalDate.now()));
+            bannerChangeDAO.addBannerChange(new BannerChange(0, bannerId,
+                    currentPrincipalService.getCurrentPrincipalName(),
+                    BannersAdminService.UPDATE, "New value: " + banner.toString(),
+                    LocalDate.now()));
         }
         return bannerId;
+    }
+
+    /**Метод добавляет в базу данных информацию о пользователе.
+     * @param appUser - объект пользователя который нужно добавить
+     * @return id добавленного пользователя или null, если в параметре null или
+     * пользователь с таким именем уже существует*/
+    @Override
+    public Integer addUser(AppUser appUser)
+    {
+        return appUserDAO.addAppUser(appUser);//Добавляем информацию о пользователе в базу
     }
 
 

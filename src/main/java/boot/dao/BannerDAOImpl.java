@@ -43,6 +43,10 @@ public class BannerDAOImpl implements BannerDAO
     private static final String COUNT_BANNERS
             = "SELECT count( * ) FROM banners";
 
+    /**Запрос для получения максимального значения Id в таблице banners*/
+    private static final String MAX_ID
+            = "SELECT max(banner_id ) FROM banners;";
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -116,7 +120,7 @@ public class BannerDAOImpl implements BannerDAO
         }
         jdbcTemplate.update(ADD_BANNER, banner.getImgSrc(), banner.getWidth(),
                 banner.getHeight(), banner.getTargetUrl(), banner.getLangId());
-        return this.getBannersCount();
+        return jdbcTemplate.queryForObject(MAX_ID, Integer.class);
     }
 
     /**Метод редактирует информацию о баннере в базе данных.

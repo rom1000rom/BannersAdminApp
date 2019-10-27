@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Registration</title>
+    <script type="text/javascript" src="jquery.json-2.4.min.js"></script>
+    <script type="text/javascript"
+            src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js">
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function()
+        {
+            $("#regBut").click(function(){
+                if(document.getElementById("login").value==="" ||
+                    document.getElementById("password").value==="")
+                {
+                    alert("Введите данные пользователя!")
+                }
+                else {
+                    //сформируем JSON
+                    var JsonData = {
+                        "appUserId": 0,
+                        "name": document.getElementById("login").value,
+                        "encrytedPassword": document.getElementById("password").value
+                    };
+                    $.ajax({
+                        type: "POST",
+                        url: "http://localhost:8080/users",
+                        dataType: "json",
+                        contentType: "application/json",
+                        data: JSON.stringify(JsonData),//можно передать переменную с json в одном из параметре запроса
+                        success: function (res) {
+                            if (res.appUserId == null) {
+                                alert("Пользователь с именем " + res.name + " уже существует");
+                            } else {
+                                alert("Пользователь успешно добавлен");
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+
+<form>
+    <fieldset>
+        <legend>Регистрация:</legend>
+        Логин:    <br /><input type='text' id ="login" /><br />
+        Пароль:     <br /><input type='password' id ="password" /><br />
+    </fieldset>
+</form> <br/>
+    <input id="regBut" type="submit" value="Зарегистрировать" /><br/><br/>
+
+    <a href="/">Главная</a>
+
+</body>
+</html>

@@ -58,18 +58,18 @@ public class BannerChangeDAOImplIT
     @Test
     public void testGetAllBannersChanges()
     {
-        BannerChange expected = new BannerChange(1, 1, 1,
+        BannerChange expected = new BannerChange(1, 1, "1",
                 "CREATE", null, LocalDate.parse("2016-09-21"));
 
         List<BannerChange> actual = testedObject.getAllBannersChanges();
 
-        assertEquals(expected, actual.get(0));
+        assertEquals(expected, actual.get(3));
     }
 
     @Test
     public void testGetBannersChanges()
     {
-        BannerChange expected = new BannerChange(3, 1, 2,
+        BannerChange expected = new BannerChange(3, 1, "2",
                 "DELETE", null, LocalDate.parse("2016-09-21"));
 
         BannerChange actual = testedObject.getBannersChanges(3, 1).get(0);
@@ -79,20 +79,10 @@ public class BannerChangeDAOImplIT
     @Test
     public void testGetBannersChangesByBannerId()
     {
-        BannerChange expected = new BannerChange(4, 5, 1,
+        BannerChange expected = new BannerChange(4, 5, "1",
                 "CREATE", null, LocalDate.parse("2016-09-21"));
 
         BannerChange actual = testedObject.getBannersChanges(5, 2).get(0);
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testGetBannersChangesByAdminId()
-    {
-        BannerChange expected = new BannerChange(3, 1, 2,
-                "DELETE", null, LocalDate.parse("2016-09-21"));
-
-        BannerChange actual = testedObject.getBannersChanges(2, 3).get(0);
         assertEquals(expected, actual);
     }
 
@@ -109,7 +99,7 @@ public class BannerChangeDAOImplIT
     @Test
     public void testAddBannerChange()
     {
-        BannerChange expected = new BannerChange(5, 2, 3,
+        BannerChange expected = new BannerChange(5, 2, "3",
                 "CREATE", null, LocalDate.parse("2016-09-21"));
 
         Integer id = testedObject.addBannerChange(expected);
@@ -129,13 +119,13 @@ public class BannerChangeDAOImplIT
     {
         String date = "2016-09-21";
         String dateTime = "2016-09-21 00:00:00";
-        BannerChange expected = new BannerChange(1, 2, 1,
+        BannerChange expected = new BannerChange(1, 2, "1",
                 "CREATE", "", LocalDate.parse(date));
 
         Map<String, Object> source = new HashMap<String, Object>();
         source.put("banner_change_id", 1);
         source.put("banner_id", 2);
-        source.put("admin_id", 1);
+        source.put("admin_name", "1");
         source.put("type_change", "CREATE");
         source.put("description_change", "");
         source.put("date_change", Timestamp.valueOf(dateTime));

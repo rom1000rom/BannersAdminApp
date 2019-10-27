@@ -16,8 +16,7 @@ public interface BannerChangeDAO
 
     /**Получить список действий над баннерами в зависимости от типа отбора:
      * 1 - по id действия над баннером(класс BannerChange)
-     * 2 - по id баннера(класс Banner)
-     * 3 - по id администратора*/
+     * 2 - по id баннера(класс Banner)*/
     List<BannerChange> getBannersChanges(Integer id, Integer type);
 
     /**Добавить действие над баннером*/

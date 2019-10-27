@@ -1,5 +1,6 @@
 package boot.services;
 
+import boot.model.AppUser;
 import boot.model.Banner;
 import boot.model.BannerChange;
 
@@ -32,7 +33,6 @@ public interface BannersAdminService
     /**Метод позволяет получить список действий над баннерами в зависимости от типа отбора:
      * 1 - по id действия над баннером
      * 2 - по id баннера
-     * 3 - по id администратора
      *@param id - id номер действия над баннером, баннера или администратора в зависимости
      *          от выбранного типа отбора
      *@param type - тип отбора
@@ -58,4 +58,10 @@ public interface BannersAdminService
      * @return номер отредактированного баннера или null, если в параметр null
      * или баннера с таким id в базе не существует*/
     Integer updateBanner(Banner banner);
+
+    /**Метод добавляет в базу данных информацию о пользователе.
+     * @param appUser - объект пользователя который нужно добавить
+     * @return id добавленного пользователя или null, если в параметре null или
+     * пользователь с таким именем уже существует*/
+    Integer addUser(AppUser appUser);
 }

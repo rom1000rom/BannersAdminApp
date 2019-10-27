@@ -13,17 +13,16 @@ public class BannerChange
 {
     private Integer bannerChangeId;
     private Integer bannerId;
-    private Integer adminId;
+    private String adminName;
     private String  typeChange;
     private String   descriptionChange;
     private LocalDate dateChange;
 
-    public BannerChange(Integer bannerChangeId, Integer bannerId, Integer adminId,
-                        String typeChange, String descriptionChange, LocalDate dateChange)
-    {
+    public BannerChange(Integer bannerChangeId, Integer bannerId, String adminName,
+                        String typeChange, String descriptionChange, LocalDate dateChange) {
         this.bannerChangeId = bannerChangeId;
         this.bannerId = bannerId;
-        this.adminId = adminId;
+        this.adminName = adminName;
         this.typeChange = typeChange;
         this.descriptionChange = descriptionChange;
         this.dateChange = dateChange;
@@ -45,12 +44,12 @@ public class BannerChange
         this.bannerId = bannerId;
     }
 
-    public Integer getAdminId() {
-        return adminId;
+    public String getAdminName() {
+        return adminName;
     }
 
-    public void setAdminId(Integer adminId) {
-        this.adminId = adminId;
+    public void setAdminName(String adminName) {
+        this.adminName = adminName;
     }
 
     public String getTypeChange() {
@@ -84,7 +83,7 @@ public class BannerChange
         BannerChange that = (BannerChange) o;
         return Objects.equals(bannerChangeId, that.bannerChangeId) &&
                 Objects.equals(bannerId, that.bannerId) &&
-                Objects.equals(adminId, that.adminId) &&
+                Objects.equals(adminName, that.adminName) &&
                 Objects.equals(typeChange, that.typeChange) &&
                 Objects.equals(descriptionChange, that.descriptionChange) &&
                 Objects.equals(dateChange, that.dateChange);
@@ -92,7 +91,7 @@ public class BannerChange
 
     @Override
     public int hashCode() {
-        return Objects.hash(bannerChangeId, bannerId, adminId, typeChange, descriptionChange, dateChange);
+        return Objects.hash(bannerChangeId, bannerId, adminName, typeChange, descriptionChange, dateChange);
     }
 
     @Override
@@ -100,7 +99,7 @@ public class BannerChange
         return "BannerChange{" +
                 "bannerChangeId=" + bannerChangeId +
                 ", bannerId=" + bannerId +
-                ", adminId=" + adminId +
+                ", adminName='" + adminName + '\'' +
                 ", typeChange='" + typeChange + '\'' +
                 ", descriptionChange='" + descriptionChange + '\'' +
                 ", dateChange=" + dateChange +

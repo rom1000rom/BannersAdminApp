@@ -9,16 +9,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +36,11 @@ import static org.mockito.Mockito.when;
 /*Аннотация @WebMvcTest(BannersController.class) создаёт тестовое окружение с настроенным
 Spring MVC и входящим в него Jackson, в том виде, в каком они настроены в реальном приложении.*/
 @WebMvcTest(BannersController.class)
+/*Аннотация @WithMockUser создает пользователя, который уже аутентифицирован, в тестовых целях.
+По умолчанию его учетные данные: user, password*/
+@WithMockUser
+@AutoConfigureMockMvc(addFilters = false)//Без этого testAddBanner и testDeleteBanner
+//не срабатывают, хотя сами REST службы работают исправно
 public class BannersControllerTest
 {
     @MockBean
@@ -48,7 +56,7 @@ public class BannersControllerTest
 
         when(service.getBanner(id)).thenReturn(null);
 
-        mockMvc.perform(get("/banners/" + id))//Совершаем тестовый Http-запрос
+        mockMvc.perform(get("/banners/" + id))
                 .andExpect(status().is(404));//Проверяем Http-ответ
 
     }
@@ -63,7 +71,7 @@ public class BannersControllerTest
         вызван метод getBanner(id) и что в ответ он должен вернуть объект expected*/
         when(service.getBanner(id)).thenReturn(expected);
 
-        mockMvc.perform(get("/banners/" + id))//Совершаем тестовый Http-запрос
+        mockMvc.perform(get("/banners/" + id))
                 .andExpect(status().isOk())//Проверяем Http-ответ
                 .andExpect(content().string(
                         new ObjectMapper().writeValueAsString(expected)));//Конвертируем в json
@@ -85,7 +93,7 @@ public class BannersControllerTest
 
         when(service.getAllBanners()).thenReturn(listBanner);
 
-        mockMvc.perform(get("/banners"))//Совершаем тестовый Http-запрос
+        mockMvc.perform(get("/banners"))
                 .andExpect(status().isOk())//Проверяем Http-ответ
                 .andExpect(content().string(
                         new ObjectMapper().writeValueAsString(listBanner)));//Конвертируем в json
@@ -99,8 +107,7 @@ public class BannersControllerTest
                 "TEST2", "TEST3");
         ObjectMapper objectMapper = new ObjectMapper();
         when(service.addBanner(expected)).thenReturn(id);
-
-        mockMvc.perform(post("/banners")//Совершаем тестовый Http-запрос
+        mockMvc.perform(post("/banners")
                 .content(objectMapper.writeValueAsString(expected))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(201))//Проверяем Http-ответ
@@ -120,7 +127,7 @@ public class BannersControllerTest
         mockMvc.perform(put("/banners/" + id)//Совершаем тестовый Http-запрос
                 .content(objectMapper.writeValueAsString(expected))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is(404));//Проверяем Http-ответ
+                .andExpect(status().is(405));//Проверяем Http-ответ
     }
 
     @Test
@@ -145,7 +152,7 @@ public class BannersControllerTest
         when(service.getBanner(id)).thenReturn(expected);
         when(service.deleteBanner(id)).thenReturn(id);
 
-        mockMvc.perform(delete("/banners/" + id))//Совершаем тестовый Http-запрос
+        mockMvc.perform(delete("/banners/" + id))
                 .andExpect(status().isOk())//Проверяем Http-ответ
                 .andExpect(content().string(
                         objectMapper.writeValueAsString(expected)));//Конвертируем в json

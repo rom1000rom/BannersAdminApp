@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Enter</title>
+</head>
+<body>
+<h2>BannerAdminApp</h2>
+<form action = "/perform_login" method="POST">
+    <fieldset>
+        <legend>Авторизация:</legend>
+        Логин:    <br /><input type='text' name ="username" /><br />
+        Пароль:     <br /><input type='password' name ="password" /><br />
+    </fieldset>
+
+    <p style='font-size:20px;color:grey;'>Демо-вход: Логин = TEST, Пароль = TEST</p>
+
+    <input type="submit" name = "submit" value="Войти" />&nbsp &nbsp &nbsp &nbsp
+    <input type="button"  value="Регистрация" onclick="parent.location='/registration'"/>
+</form> <br/>
+
+</body>
+</html>

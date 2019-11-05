@@ -31,6 +31,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http
                 .authorizeRequests()
+                /*Разрешаем не авторизованный доступ к js-файлам,
+                файлам стилей и картинкам иначе они не будут отображаться*/
+                .antMatchers("/static/css/*", "/static/js/*", "/static/images/*")
+                .permitAll()
                 .antMatchers("/users", "/registration").permitAll()
                 .anyRequest().authenticated()//Запросы доступны только авторизованным пользователям
                 .and()

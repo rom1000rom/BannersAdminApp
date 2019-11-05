@@ -1,23 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Enter</title>
+    <!--Подключаем внешний файл стилей-->
+    <link href="../static/css/login.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<h2>BannerAdminApp</h2>
-<form action = "/perform_login" method="POST">
-    <fieldset>
-        <legend>Авторизация:</legend>
-        Логин:    <br /><input type='text' name ="username" /><br />
-        Пароль:     <br /><input type='password' name ="password" /><br />
-    </fieldset>
+<div id="rightPan">
+    <form action="/perform_login" method="post" class="form1">
+        <h2>Авторизация</h2>
+        <label> Логин: </label>
+        <input name="username" type="text" />
+        <label> Пароль: </label>
+        <input name="password" type="password" />
 
-    <p style='font-size:20px;color:grey;'>Демо-вход: Логин = TEST, Пароль = TEST</p>
-
-    <input type="submit" name = "submit" value="Войти" />&nbsp &nbsp &nbsp &nbsp
-    <input type="button"  value="Регистрация" onclick="parent.location='/registration'"/>
-</form> <br/>
+        <input type="submit" name = "submit" class="botton"  value="Войти" />
+        <input type="button"  value="Регистрация"  class="botton2"  onclick="parent.location='/registration'"/>
+    </form>
+    <br/><br/>
+</div>
+<div id="hintPan">&nbsp Демо-вход: Логин = TEST, Пароль = TEST</div>
 
 </body>
 </html>

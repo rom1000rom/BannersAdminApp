@@ -17,6 +17,8 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.sql.DataSource;
 
@@ -26,11 +28,20 @@ import javax.sql.DataSource;
  @version 15.09.2019 */
 @SpringBootApplication
 @EnableTransactionManagement//Включаем поддержку транзакций
-public class App
+public class App implements WebMvcConfigurer
 {
     public static void main(String[] args)
     {
         SpringApplication.run(App.class, args);
+    }
+
+    /*Без реализации этого метода не подключаются JS-скрипты и CSS-файлы
+    в подпапках папки static*/
+    public void addResourceHandlers(ResourceHandlerRegistry registry)
+    {
+        registry.addResourceHandler("/static/**").
+                addResourceLocations("classpath:/static/");
+
     }
 
     @Bean("dbProperties")

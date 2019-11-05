@@ -38,6 +38,8 @@ public class MainController
     @RequestMapping("/login" )
     public String login()
     {
+        //Очищаем контекст безопасности при каждом запросе
+        SecurityContextHolder.clearContext();
         return "login";
     }
 

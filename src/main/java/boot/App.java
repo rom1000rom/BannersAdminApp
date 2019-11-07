@@ -72,9 +72,9 @@ public class App implements WebMvcConfigurer
     {
         DriverManagerDataSource driverManager = new DriverManagerDataSource();
         driverManager.setDriverClassName("org.postgresql.Driver");
-        driverManager.setUrl("jdbc:postgresql://localhost:5432/banners_admin_db_test");
-        driverManager.setUsername("postgres");
-        driverManager.setPassword("rgb111RGB");
+        driverManager.setUrl("jdbc:postgresql://ec2-54-246-84-100.eu-west-1.compute.amazonaws.com/d4ndial3c74jlm?sslmode=require");
+        driverManager.setUsername("wurwswhmoyajtc");
+        driverManager.setPassword("5acb7f7a2d16451994a9d4697b7c3f5d7ffb228bba64ad97e9bcb539fb0e121c");
         return driverManager;
     }
 

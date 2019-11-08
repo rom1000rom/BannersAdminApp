@@ -1,0 +1,7 @@
+controllers\BannersControllerTest.class
+dao\BannerChangeDAOImplIT.class
+dao\BannerDAOImplIT.class
+services\BannersAdminServiceImplTest.class
+dao\AppUserDAOImplIT.class
+controllers\UsersControllerTest.class
+controllers\BannersChangesControllerTest.class

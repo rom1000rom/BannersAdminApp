@@ -11,8 +11,8 @@
 .mtj.tmp/
 
 # Package Files #
-
-
+*target/*
+*/Procfile
 *.nar
 *.ear
 *.zip

@@ -2,7 +2,7 @@
     $(document).ready(function()//Код который будет выполнен после полной загрузки документа
     {
         $.getJSON(//Загружаем JSON - данные с сервера используя AJAX запрос(GET).
-            "http://banners-admin-app.herokuapp.com/banners",
+            "/banners",
             function(data)
             {
                 for (var i in data) //Проходим по массиву JSON-объектов

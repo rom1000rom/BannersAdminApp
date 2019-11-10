@@ -32,7 +32,7 @@ $(document).ready(function()//Код который будет выполнен 
 
         //Загружаем JSON - данные с сервера используя AJAX запрос(GET).
         $.getJSON(
-            "http://localhost:8080/bannersChanges",
+            "/bannersChanges",
             function(data)
             {
                 for (var i in data) //Проходим по массиву JSON-объектов

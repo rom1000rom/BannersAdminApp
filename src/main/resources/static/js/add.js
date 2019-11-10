@@ -21,7 +21,7 @@ $(document).ready(function()
         };
         $.ajax({
             type: "POST",
-            url: "http://localhost:8080/banners",
+            url: "/banners",
             dataType: "json",
             contentType : "application/json",
             data: JSON.stringify(JsonData),//можно передать переменную с json в одном из параметре запроса

@@ -1,21 +1,12 @@
 
     $(document).ready(function()//Код который будет выполнен после полной загрузки документа
     {
-        $.ajax({
-            type: "GET",
-            url: "/banners",
-            success: function () {//функция выполняется при удачном заверщение
-                alert("Получилось!");
-            }
-        });
-
         $.getJSON(//Загружаем JSON - данные с сервера используя AJAX запрос(GET).
             "/banners",
             function(data)
             {
                 for (var i in data) //Проходим по массиву JSON-объектов
                 {
-                    alert("Получилось2!");
                     var row = data[i];
                     var y = i;
                     ++y;
@@ -59,7 +50,7 @@
             {
                     $.ajax({
                         type: "DELETE",
-                        url: "https://banners-admin-app.herokuapp.com/banners/" + gr[index].getAttribute("id"),
+                        url: "/banners/" + gr[index].getAttribute("id"),
                         success: function () {//функция выполняется при удачном заверщение
                             location.reload();//Перезагружаем страницу
                         }
@@ -95,7 +86,7 @@
         {
             var typeSort = document.getElementById("sort").selectedIndex;
             $.getJSON(//Загружаем JSON - данные с сервера используя AJAX запрос(GET).
-                "https://banners-admin-app.herokuapp.com/banners?typeSort=" + typeSort,
+                "/banners?typeSort=" + typeSort,
                 function(data)
                 {
                     for (var i in data) //Проходим по массиву JSON-объектов

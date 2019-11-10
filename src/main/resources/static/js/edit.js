@@ -2,7 +2,7 @@ $(document).ready(function()
 {
     //Получаем характеристики выбранного баннера из локальное хранилище
     $.getJSON(//Загружаем JSON - данные с сервера используя AJAX запрос(GET).
-        "http://localhost:8080/banners/" + localStorage.getItem("id"),
+        "/banners/" + localStorage.getItem("id"),
         function(data)
         {
             document.getElementById("imgSrc").setAttribute("value", data.imgSrc);
@@ -27,7 +27,7 @@ $(document).ready(function()
 
             $.ajax({
                 type: "PUT",
-                url: "http://localhost:8080/banners",
+                url: "/banners",
                 dataType: "json",
                 contentType : "application/json",
                 data: JSON.stringify(JsonData),//можно передать переменную с json в одном из параметров запроса

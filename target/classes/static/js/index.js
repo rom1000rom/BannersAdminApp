@@ -1,12 +1,21 @@
 
     $(document).ready(function()//Код который будет выполнен после полной загрузки документа
     {
+        $.ajax({
+            type: "GET",
+            url: "/banners",
+            success: function () {//функция выполняется при удачном заверщение
+                alert("Получилось!");
+            }
+        });
+
         $.getJSON(//Загружаем JSON - данные с сервера используя AJAX запрос(GET).
             "/banners",
             function(data)
             {
                 for (var i in data) //Проходим по массиву JSON-объектов
                 {
+                    alert("Получилось2!");
                     var row = data[i];
                     var y = i;
                     ++y;

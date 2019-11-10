@@ -1,7 +1,7 @@
 $(document).ready(function()//Код который будет выполнен после полной загрузки документа
 {
     $.getJSON(//Загружаем JSON - данные с сервера используя AJAX запрос(GET).
-        "http://localhost:8080/bannersChanges",
+        "/bannersChanges",
         function(data)
         {
             for (var i in data) //Проходим по массиву JSON-объектов
